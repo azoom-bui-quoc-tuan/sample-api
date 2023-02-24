@@ -15,7 +15,6 @@ const getAliases = () => {
     (acc, key) => (aliases[key][0] === '/' ? acc : { ...acc, [key]: path.join(base, aliases[key]) }),
     aliases
   )
-
   return absoluteAliases
 }
 
