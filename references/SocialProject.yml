@@ -1,20 +1,20 @@
-openapi: 3.1.0
+openapi: 3.0.0
 x-stoplight:
-  id: 09q2q3d40kitn
+  id: bx6xkz8iob9ei
 info:
-  title: getUser
+  title: t
   version: '1.0'
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/users/{_userId}':
+  '/users/{userId}':
     parameters:
       - schema:
-          type: string
-        name: _userId
+          type: integer
+        name: userId
         in: path
         required: true
-        description: get me infor
+        description: Id of an existing user.
     get:
       summary: Get User Info by User ID
       tags: []
@@ -35,19 +35,10 @@ paths:
                     dateOfBirth: '1997-10-31'
                     emailVerified: true
                     signUpDate: '2019-08-24'
-        '201':
-          description: Created
         '404':
           description: User Not Found
       operationId: get-users-userId
       description: Retrieve the information of the user with the matching user ID.
-      parameters:
-        - schema:
-            type: string
-          in: header
-        - schema:
-            type: string
-          in: query
     patch:
       summary: Update User Information
       operationId: patch-users-userId
@@ -85,7 +76,7 @@ paths:
                   type: string
                 email:
                   type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
+                  description: "If a new email is given, the user's email verified property will be set to false."
                 dateOfBirth:
                   type: string
             examples:
@@ -100,26 +91,29 @@ paths:
                   lastName: Baker
                   dateOfBirth: '1985-10-02'
         description: Patch user properties to update.
-  /users:
+  /user:
     post:
       summary: Create New User
       operationId: post-user
       responses:
         '200':
-          description: OK
-          headers: {}
+          description: User Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '201':
-          description: Created
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
         '400':
           description: Missing Required Information
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
         '409':
           description: Email Already Taken
       requestBody:
@@ -128,14 +122,20 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                firstName:
+                  type: string
+                lastName:
                   type: string
                 email:
                   type: string
-                age:
-                  type: integer
-                '':
+                dateOfBirth:
                   type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
             examples:
               Create User Bob Fellow:
                 value:
@@ -145,71 +145,21 @@ paths:
                   dateOfBirth: '1996-08-24'
         description: Post the necessary fields for the API to create a new user.
       description: Create a new user.
-      security:
-        - Authorization: []
-    parameters: []
-  /posts:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses:
-        '200':
-          $ref: '#/components/responses/res'
-      operationId: get
-    post:
-      summary: ''
-      operationId: post-posts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                type: object
-                properties: {}
-            application/x-www-form-urlencoded:
-              schema:
-                type: object
-                properties: {}
-            multipart/form-data:
-              schema:
-                type: object
-                properties: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/xml:
-            schema:
-              type: object
-              properties: {}
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                '':
-                  type: string
-        description: ''
 components:
   schemas:
     User:
       title: User
       type: object
-      examples:
-        - id: 142
+      description: ''
+      x-examples:
+        Alice Smith:
+          id: 142
           firstName: Alice
           lastName: Smith
           email: alice.smith@gmail.com
           dateOfBirth: '1997-10-31'
           emailVerified: true
           signUpDate: '2019-08-24'
-      x-internal: false
       properties:
         id:
           type: integer
@@ -232,105 +182,9 @@ components:
           type: string
           format: date
           description: The date that the user was created.
-        '':
-          type: string
       required:
         - id
         - firstName
         - lastName
         - email
         - emailVerified
-    Friend:
-      title: Friend
-      x-stoplight:
-        id: 1wmvsdc396956
-      type: object
-      properties:
-        id:
-          type: string
-    Post:
-      title: Post
-      x-stoplight:
-        id: cde8zj4pak283
-      type: object
-      properties:
-        id:
-          type: string
-    Comment:
-      title: Comment
-      x-stoplight:
-        id: mhd9a0ce6krv2
-      type: object
-      properties:
-        id:
-          type: string
-    Reaction:
-      title: Reaction
-      x-stoplight:
-        id: hyveqx8dl7zji
-      type: object
-      properties:
-        id:
-          type: string
-  requestBodies:
-    body:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              userId:
-                type: string
-  responses:
-    res:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            properties:
-              id:
-                type: string
-        application/xml:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              age:
-                type: string
-              '':
-                type: string
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              gender:
-                type: string
-              age:
-                type: number
-              '':
-                type: string
-  parameters:
-    param:
-      name: userId
-      in: query
-      required: false
-      schema:
-        type: string
-      description: choose user
-  examples:
-    rse:
-      value:
-        description: test
-        type: object
-        properties:
-          id:
-            type: string
-        required:
-          - userId: string
-  securitySchemes:
-    Authorization:
-      type: http
-      scheme: bearer

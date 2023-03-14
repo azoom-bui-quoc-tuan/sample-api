@@ -1,4 +1,9 @@
 /**
  * @type {import('express').RequestHandler}
  */
-export default async (req, res) => {}
+import { PrismaClient } from '@prisma/client'
+export default async (req, res) => {
+  console.log('object')
+  const prisma = new PrismaClient()
+  res.send({ e: 3 })
+}

@@ -47,7 +47,7 @@ app.use(
   Sentry.Handlers.requestHandler(),
   Sentry.Handlers.tracingHandler(),
   OpenApiValidator.middleware({
-    apiSpec: 'references/openapi.yml',
+    apiSpec: 'references/SocialProject.yml',
     validateRequests: true,
     validateResponses: true,
   }),
