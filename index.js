@@ -7,6 +7,8 @@ import nnnRouter from '@middleware/nnn-router'
 import cors from 'cors'
 import statuses from 'statuses'
 import { NODE_ENV_LIST } from '@const/index'
+import { errorHandler } from '@helpers/error-handler/error-handler'
+import dotenv from 'dotenv'
 
 // Customize express response
 express.response.sendStatus = function (statusCode) {
@@ -17,7 +19,7 @@ express.response.sendStatus = function (statusCode) {
 }
 
 const app = express()
-
+// dotenv.config()
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
@@ -46,11 +48,11 @@ app.use(
 app.use(
   Sentry.Handlers.requestHandler(),
   Sentry.Handlers.tracingHandler(),
-  OpenApiValidator.middleware({
-    apiSpec: 'references/SocialProject.yml',
-    validateRequests: true,
-    validateResponses: true,
-  }),
+  // OpenApiValidator.middleware({
+  //   apiSpec: 'references/SocialProject.yml',
+  //   validateRequests: true,
+  //   validateResponses: true,
+  // }),
   nnnRouter({
     routeDir: 'routes',
     baseRouter: promiseRouter(),
@@ -59,7 +61,7 @@ app.use(
   Sentry.Handlers.errorHandler(),
   (err, req, res, next) => {
     error.call(console, err)
-    return res.sendStatus(err.statusCode || err.status || 500)
+    errorHandler(err, req, res, next)
   }
 )
 

@@ -1,4 +1,7 @@
-const { PrismaClient } = require('@prisma/client')
+/**
+ * @type {import('express').RequestHandler}
+ */
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 async function getPostById(postId) {
     const post = await prisma.post.findUnique({
@@ -9,4 +12,7 @@ async function getPostById(postId) {
     return post
 }
 
-export default async(req, res) => {}
+export default (req, res) => {
+    console.log('getFuction')
+    res.send("hihi");
+}
