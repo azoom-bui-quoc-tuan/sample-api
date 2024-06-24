@@ -12,20 +12,29 @@ const getAliases = () => {
   const aliases = _moduleAliases || {}
 
   const absoluteAliases = Object.keys(aliases).reduce(
-    (acc, key) => (aliases[key][0] === '/' ? acc : { ...acc, [key]: path.join(base, aliases[key]) }),
+    (acc, key) =>
+      aliases[key][0] === '/'
+        ? acc
+        : { ...acc, [key]: path.join(base, aliases[key]) },
     aliases
   )
-
   return absoluteAliases
 }
 
-const isAliasInSpecifier = (aPath, alias) => aPath.indexOf(alias) === 0 && (aPath.length === alias.length || aPath[alias.length] === '/')
+const isAliasInSpecifier = (aPath, alias) =>
+  aPath.indexOf(alias) === 0 &&
+  (aPath.length === alias.length || aPath[alias.length] === '/')
 
 const aliases = getAliases()
 
 export const resolve = (specifier, parentModuleURL, defaultResolve) => {
-  const alias = Object.keys(aliases).find((key) => isAliasInSpecifier(specifier, key))
-  const newSpecifier = alias === undefined ? specifier : path.join(aliases[alias], specifier.substr(alias.length))
+  const alias = Object.keys(aliases).find(key =>
+    isAliasInSpecifier(specifier, key)
+  )
+  const newSpecifier =
+    alias === undefined
+      ? specifier
+      : path.join(aliases[alias], specifier.substr(alias.length))
 
   return defaultResolve(newSpecifier, parentModuleURL)
 }

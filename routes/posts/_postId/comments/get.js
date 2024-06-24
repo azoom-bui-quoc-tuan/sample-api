@@ -1,4 +1,18 @@
 /**
  * @type {import('express').RequestHandler}
  */
-export default async (req, res) => {}
+import { prisma } from '@database'
+export default async (req, res) => {
+  const post = await prisma.post.findFirst({
+    where: {
+      id: req.params.id,
+    },
+    include: {
+      author: true,
+      comments: true,
+    },
+  })
+  res.status(200).json({
+    data: post,
+  })
+}
